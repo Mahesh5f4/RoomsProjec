@@ -16,7 +16,7 @@ const teamData = [
     branch: 'CSE',
     roll: '22A51A05F4',
     email: 'mahesh20104@gmail.com.com',
-    img: process.env.PUBLIC_URL + '/mahesh.jpg',
+    img: process.env.PUBLIC_URL + '/blazzerpic1.jpg',
     portfolio: 'https://mahesh5f4.github.io/myportfolio/',
   },
   {
@@ -31,7 +31,7 @@ const teamData = [
     name: 'Bharath',
     branch: 'CSE',
     roll: '22A51A05F7',
-    email: 'rahul.verma@example.com',
+    email: 'bharathkurasa@gmail.com',
     img: process.env.PUBLIC_URL + '/bharath.jpg',
     portfolio: 'https://rahulverma.io',
   },
