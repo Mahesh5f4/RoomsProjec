@@ -7,7 +7,7 @@ const teamData = [
     name: 'Madhu',
     branch: 'CSE',
     roll: '22A51A05F5',
-    email: '',
+    email: 'madhukorada23@gmail.com',
     img: process.env.PUBLIC_URL + '/madhu.jpg',
     portfolio: 'https://madhu-portfolio-m9yv.onrender.com/',
   },
@@ -24,7 +24,7 @@ const teamData = [
     branch: 'CSE',
     roll: '22A51A05D9',
     email: 'sneha.reddy@example.com',
-    img: process.env.PUBLIC_URL + '/sneha.jpg',
+    img: process.env.PUBLIC_URL + '/jagadeesh.jpg',
     portfolio: 'https://snehareddy.me',
   },
   {
@@ -32,7 +32,7 @@ const teamData = [
     branch: 'CSE',
     roll: '22A51A05F7',
     email: 'rahul.verma@example.com',
-    img: process.env.PUBLIC_URL + '/madhu.jpg',
+    img: process.env.PUBLIC_URL + '/bharath.jpg',
     portfolio: 'https://rahulverma.io',
   },
 ];
