@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Footer = () => {
   const navigate = useNavigate();
+  const currentYear = new Date().getFullYear(); // This gets the current year dynamically
 
   return (
     <footer
@@ -17,7 +18,7 @@ const Footer = () => {
         fontSize: '0.9rem',
       }}
     >
-      <p className="mb-0">
+      <p className="mb-1">
         Developed by{' '}
         <span
           onClick={() => navigate('/team')}
@@ -30,6 +31,9 @@ const Footer = () => {
         >
           Department of Computer Science and Engineering AITAM
         </span>
+      </p>
+      <p className="mb-0">
+        &copy; {currentYear} All rights reserved.
       </p>
     </footer>
   );
