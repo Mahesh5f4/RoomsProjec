@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const Homepage = () => {
   const [block, setBlock] = useState([]);
   const [err, setErr] = useState("");
@@ -13,15 +14,18 @@ const Homepage = () => {
   const [filteredRooms, setFilteredRooms] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  
+ 
   const [access, setAccess] = useState("");
   const [dept, setDept] = useState("");
   const [isRefresh, setIsRefresh] = useState(false);
+
 
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
   const [editingBlockId, setEditingBlockId] = useState(null);
 const [newBlockName, setNewBlockName] = useState("");
+
+
 
 
   // Shortcut keys
@@ -37,28 +41,31 @@ const [newBlockName, setNewBlockName] = useState("");
       }
     };
 
+
     window.addEventListener("keydown", shortcutKeys);
     return () => {
       window.removeEventListener("keydown", shortcutKeys);
     };
   }, []);
 
+
   useEffect(() => {
     const handleBackButton = (event) => {
       event.preventDefault();
-      navigate("/"); 
+      navigate("/");
     };
+
 
     const token = sessionStorage.getItem("token");
     const decode = jwtDecode(token);
     setAccess(decode.role);
     setDept(decode.dept);
-    
+   
     const fetchDetails = async () => {
       try {
         const details = await axios.get("http://localhost:5000/block/get-data");
         setBlock(details.data);
-        const allRooms = details.data.flatMap(block => 
+        const allRooms = details.data.flatMap(block =>
           block.floors.flatMap(floor => floor.rooms)
         );
         setFilteredRooms(allRooms);
@@ -70,13 +77,16 @@ const [newBlockName, setNewBlockName] = useState("");
     };
     fetchDetails();
 
+
     window.history.pushState(null, null, window.location.href);
     window.addEventListener("popstate", handleBackButton);
+
 
     return () => {
       window.removeEventListener("popstate", handleBackButton);
     };
   }, [isRefresh]);
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -85,11 +95,13 @@ const [newBlockName, setNewBlockName] = useState("");
       }
     };
 
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
 
   if (loading) {
     return (
@@ -99,9 +111,11 @@ const [newBlockName, setNewBlockName] = useState("");
     );
   }
 
+
   if (err) {
     return <div className="error">Error occurred: {err}</div>;
   }
+
 
   const modifyBlock = async (e) => {
     try {
@@ -121,18 +135,21 @@ const [newBlockName, setNewBlockName] = useState("");
     }
   };
 
+
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
     setSearchTerm(term);
 
+
     const allRooms = block.flatMap(block =>
-      block.floors.flatMap(floor => 
+      block.floors.flatMap(floor =>
         floor.rooms.map(room => ({
-          ...room, 
-          block_name: block.block_name 
+          ...room,
+          block_name: block.block_name
         }))
       )
     );
+
 
     if (term === "") {
       setFilteredRooms(allRooms);
@@ -144,12 +161,13 @@ const [newBlockName, setNewBlockName] = useState("");
     }
   };
 
+
   const deleteBlock = async (e) => {
     try {
       if (window.confirm(`Are you sure you want to delete ${e.block_name}?`)) {
         await axios.delete(`http://localhost:5000/block/delete-data/${e._id}`);
         toast.success(`${e.block_name} has been deleted successfully`);
-        
+       
         const details = await axios.get("http://localhost:5000/block/get-data");
         setBlock(details.data);
       }
@@ -159,23 +177,28 @@ const [newBlockName, setNewBlockName] = useState("");
     }
   };
 
+
   const handleSignOut = () => {
     sessionStorage.clear();
     toast.success("Signed out successfully!");
     navigate("/login");
   };
 
+
   const handleRegisterUser = () => {
     navigate("/register");
   };
+
 
   const dashboardHandler = () => {
     navigate("/dashboard");
   };
 
+
   const roomsOverview = () => {
     navigate("/roomsOverview");
   };
+
 
   return (
     <>
@@ -207,12 +230,12 @@ const [newBlockName, setNewBlockName] = useState("");
                 }}
               />
             </div>
-  
+ 
             {/* Center: Dynamic Rooms Title */}
             <h3 className="m-0 text-center" style={{ color: 'white', flex: '1' }}>
               Dynamic Rooms
             </h3>
-  
+ 
             {/* Right: Search Bar */}
             <div className="d-flex align-items-center" style={{ flex: '0 1 auto', marginRight: '1cm' }}>
               <input
@@ -223,54 +246,55 @@ const [newBlockName, setNewBlockName] = useState("");
                 style={{ backgroundColor: '#eee' }}
               />
             </div>
-  
+ 
             {/* Right: Hamburger Menu */}
             <div className="position-relative" ref={menuRef}>
               <button className="btn btn-outline-light" onClick={() => setShowMenu(!showMenu)}>
                 ☰
               </button>
+              {/* Dropdown Menu */}
+                {showMenu && (
+                  <ul className="dropdown-menu show position-absolute end-0 mt-2">
+                    {access === 'super_admin' && (
+                      <li>
+                        <button className="dropdown-item text-primary" onClick={() => navigate('/aitam')}>
+                          Add Block
+                        </button>
+                      </li>
+                    )}
+                    {access !== 'student' && (
+                      <li>
+                        <button className="dropdown-item text-success" onClick={handleRegisterUser}>
+                          Register
+                        </button>
+                      </li>
+                    )}
+                    {access === 'super_admin' && (
+                      <li>
+                        <button className="dropdown-item text-primary" onClick={dashboardHandler}>
+                          Dashboard
+                        </button>
+                      </li>
+                    )}
+                    <li>
+                      <button className="dropdown-item text-warning" onClick={roomsOverview}>
+                        Rooms Overview
+                      </button>
+                    </li>
+                    <li>
+                      <button className="dropdown-item text-danger" onClick={handleSignOut}>
+                        Sign Out
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-  
-        {/* Dropdown Menu */}
-        {showMenu && (
-          <ul className="dropdown-menu show position-absolute start-0 mt-2">
-            {access === 'super_admin' && (
-              <li>
-                <button className="dropdown-item text-primary" onClick={() => navigate('/aitam')}>
-                  Add Block
-                </button>
-              </li>
-            )}
-            {access !== 'student' && (
-              <li>
-                <button className="dropdown-item text-success" onClick={handleRegisterUser}>
-                  Register
-                </button>
-              </li>
-            )}
-            {access === 'super_admin' && (
-              <li>
-                <button className="dropdown-item text-primary" onClick={dashboardHandler}>
-                  Dashboard
-                </button>
-              </li>
-            )}
-            <li>
-              <button className="dropdown-item text-warning" onClick={roomsOverview}>
-                Rooms Overview
-              </button>
-            </li>
-            <li>
-              <button className="dropdown-item text-danger" onClick={handleSignOut}>
-                Sign Out
-              </button>
-            </li>
-          </ul>
-        )}
+ 
+       
       </div>
-  
+ 
       {/* 🧠 Push Main Content Down so it's not hidden under Navbar */}
       <div style={{ marginTop: '130px' }}>
         {/* Room Details Section (Shown when Searching) */}
@@ -314,10 +338,10 @@ const [newBlockName, setNewBlockName] = useState("");
             )}
           </div>
         )}
-  
+ 
         {/* 🧹 You can continue your normal content here below */}
       </div>
-  
+ 
       {/* Main Block List */}
       {!block.length ? (
         <h1 className="text-center text-muted mt-4">No data found...</h1>
@@ -335,7 +359,7 @@ const [newBlockName, setNewBlockName] = useState("");
                   <h5 className="text-primary">{e.block_name.toUpperCase()}</h5>
                   <p className="small text-muted">No of Floors: {e.floors.length}</p>
                 </div>
-  
+ 
                 {(access === 'super_admin' || e.block_name.toLowerCase() === dept) && (
                   <div className="d-flex justify-content-between card-button">
                     <button className="btn btn-primary btn-sm" onClick={() => modifyBlock(e)}>
@@ -353,14 +377,7 @@ const [newBlockName, setNewBlockName] = useState("");
       )}
     </>
   );
-  
-  
-  
-  
+
 
 }
 export default Homepage;
-
-
-
-

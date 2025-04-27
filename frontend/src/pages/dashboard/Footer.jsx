@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Footer = () => {
+
+const Footer = forwardRef((props, ref) => {  // Correct: (props, ref)
   const navigate = useNavigate();
-  const currentYear = new Date().getFullYear(); // This gets the current year dynamically
+  const currentYear = new Date().getFullYear();
+
 
   return (
     <footer
+      ref={ref}  // Attach the forwarded ref to the footer tag
       className="text-white text-center py-3 px-2"
       style={{
-        backgroundColor: '#1a237e', // Mild dark blue
+        backgroundColor: '#1a237e',
         position: 'fixed',
         bottom: 0,
         width: '100%',
@@ -37,6 +40,7 @@ const Footer = () => {
       </p>
     </footer>
   );
-};
+});
+
 
 export default Footer;
